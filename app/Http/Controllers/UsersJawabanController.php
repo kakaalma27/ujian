@@ -24,7 +24,7 @@ class UsersJawabanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() 
+    public function index()
     {
     }
 
@@ -39,7 +39,7 @@ class UsersJawabanController extends Controller
             $soal = Soal::with('jawabans')->paginate(1);
             $userId = auth()->id();
             $infoUjian = usersKelas::with(['user', 'kelas'])
-            ->where('user_id', $userId) 
+            ->where('user_id', $userId)
             ->get();
             $pelajaran = guruMengajar::with('User', 'Pelajarans')
             ->where('user_id', $userId)
@@ -48,7 +48,7 @@ class UsersJawabanController extends Controller
             $insertUjianUserId = DB::table('users_ujians')->insertGetId([
                 'user_id' => Auth::id(),
                 'pelajaran_id' => $cek[0]->id,
-                'kelas_id' => $infoUjian[0]->id,
+                'kelas_id' => $infoUjian[0]->kelas_id,
                 'start_timestamp' => time(),
                 'end_timestamp' => time() + ($cek[0]->durasi * 60),
                 'is_done' => 0,
@@ -92,7 +92,7 @@ class UsersJawabanController extends Controller
             $jawabanContainer = [];
             $jawabanSoal = DB::select(DB::raw("SELECT id, isi_jawaban, is_correct FROM jawabans WHERE soal_id = ? ORDER BY id ASC"), [$soal->soal_id]);
             foreach($jawabanSoal as $jawaban){
-                $jawabanContainer[] = ['jawaban_id' => $jawaban->id, 'isi_jawaban' => $jawaban->isi_jawaban]; 
+                $jawabanContainer[] = ['jawaban_id' => $jawaban->id, 'isi_jawaban' => $jawaban->isi_jawaban];
             }
             $data[$key]['jawaban'] = $jawabanContainer;
         }
@@ -131,18 +131,27 @@ class UsersJawabanController extends Controller
     }
 
     public function getAllNilaiUjian(Request $request){
-        $ujians = DB::select(DB::raw("SELECT users_ujians.`id`, users_ujians.start_timestamp, users_ujians.end_timestamp, pelajarans.pelajaran FROM users_ujians INNER JOIN pelajarans ON users_ujians.pelajaran_id = pelajarans.id WHERE users_ujians.user_id = ? AND users_ujians.is_done = ? ORDER BY users_ujians.id DESC"), [Auth::id(), 1]);
+        $users = DB::select(DB::raw("SELECT id FROM users WHERE `name` LIKE ?"), ["%".$request->get("name")."%"]);
+        $usersId = [];
+        for($i = 0; $i < sizeof($users); $i++){
+            $usersId[] = $users[$i]->id;
+        }
+        if(sizeof($usersId) > 0){
+            $ujians = DB::select(DB::raw("SELECT users_ujians.`id`, users.name, users_ujians.start_timestamp, users_ujians.end_timestamp, pelajarans.pelajaran FROM users_ujians INNER JOIN users ON users.id = users_ujians.user_id INNER JOIN pelajarans ON users_ujians.pelajaran_id = pelajarans.id WHERE users_ujians.user_id IN (?) AND users_ujians.is_done = ? ORDER BY users_ujians.id DESC"), [implode(",", $usersId), 1]);
+        }else{
+            $ujians = DB::select(DB::raw("SELECT users_ujians.`id`, users.name, users_ujians.start_timestamp, users_ujians.end_timestamp, pelajarans.pelajaran FROM users_ujians INNER JOIN users ON users.id = users_ujians.user_id INNER JOIN pelajarans ON users_ujians.pelajaran_id = pelajarans.id WHERE users_ujians.is_done = ? ORDER BY users_ujians.id DESC"), [1]);
+        }
         $wrapper = [];
         foreach($ujians as $ujianKey => $ujian){
             $userSoal = DB::select(DB::raw("SELECT id, user_id, soal_id, jawaban_id, user_ujian_id FROM users_jawabans WHERE user_ujian_id = ? ORDER BY id ASC"), [$ujian->id]);
             $information= [];
+            $information['user_name'] = $ujian->name;
             $information['start_timestamp'] = (int) $ujian->start_timestamp;
             $information['end_timestamp'] = (int) $ujian->end_timestamp;
             $information['jumlah_soal'] = sizeof($userSoal);
             $information['mapel'] = $ujian->pelajaran;
             $totalBenar = 0;
             $totalSalah = 0;
-            $nilaiPresentase = 0;
             $data = [];
             foreach($userSoal as $key => $soal){
                 $isiSoal = DB::select(DB::raw("SELECT id, isi_soal FROM soals WHERE id = ?"), [$soal->soal_id]);
@@ -181,8 +190,8 @@ class UsersJawabanController extends Controller
             "data" => $wrapper
         ]);
     }
-    
-    
+
+
 
     // public function store(Request $request)
     // {
@@ -191,16 +200,16 @@ class UsersJawabanController extends Controller
     //         $hasil = $request->input('detail_soal');
     //         $soal_ids = Soal::pluck('id')->toArray();
     //         $user = auth()->id();
-    
+
     //         foreach ($soal_ids as $soal_id) {
     //             $jawaban = jawaban::where('isi_jawaban', $hasil)
     //                 ->where('soal_id', $soal_id)
     //                 ->first();
-    
+
     //             $user_jawaban = new users_jawaban;
     //             $user_jawaban->user_id = $user;
     //             $user_jawaban->soal_id = $soal_id;
-    
+
     //             if ($jawaban->is_correct == 1) {
     //                 $user_jawaban->jawaban_id = $jawaban->id;
     //                 $user_jawaban->detail_soal = $hasil;
@@ -210,12 +219,12 @@ class UsersJawabanController extends Controller
     //                 $user_jawaban->detail_soal = $hasil;
     //                 $user_jawaban->detail_jawaban = 0;
     //             }
-    
+
     //             $user_jawaban->save();
     //         }
-    
+
     //         DB::commit(); // Commit the transaction after the loop
-    
+
     //         return response()->json(true);
     //     } catch (\Throwable $e) {
     //         DB::rollBack();
