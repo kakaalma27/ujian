@@ -30,6 +30,12 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+
+Route::middleware(['auth'])->group(function()
+{
+    Route::get("/get-nilai-ujian", [UsersJawabanController::class, 'getAllNilaiUjian']);
+});
+
 Route::middleware(['auth','user-role:user'])->group(function()
 {
     Route::get("/home",[HomeController::class, 'userHome'])->name("home");
@@ -38,7 +44,6 @@ Route::middleware(['auth','user-role:user'])->group(function()
     Route::get("/get-ujian-details",[UsersJawabanController::class, 'getUjianDetails']);
     Route::post("/update-ujian-details",[UsersJawabanController::class, 'updateJawabanUser']);
     Route::get("/selesai-ujian", [UsersJawabanController::class, 'selesaiUjian']);
-    Route::get("/get-nilai-ujian", [UsersJawabanController::class, 'getAllNilaiUjian']);
 });
 // Route Editor
 Route::middleware(['auth','user-role:guru'])->group(function()
