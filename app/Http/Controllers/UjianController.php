@@ -177,7 +177,6 @@ class UjianController extends Controller
     {
         DB::beginTransaction();
 
-        dd($request->all());
         try {
             $question = Soal::find($id);
 
