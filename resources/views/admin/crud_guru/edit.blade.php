@@ -2,8 +2,17 @@
 @section('title', 'Edit Pelajaran')
 @section('content')
     <div class="row justify-content-center">
+        @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <div class="col-md-8">
-            <div class="card">
+            <div class="card" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px; boder:none;">
                 <div class="card-header fs-5 ms-3 d-none d-sm-inline">{{ __('Edit Pelajaran') }}</div>
 
                 <div class="card-body">

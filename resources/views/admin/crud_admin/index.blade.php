@@ -3,9 +3,9 @@
 @section('content')
         <div class="row">
             <div class="col">
-                <div class="card text-dark">
+                <div class="card text-dark" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px; boder:none;">
                     <div class="card-header fs-5 d-none d-sm-inline">
-                        Informasi Account
+                        <span class="fs-4 fw-normal">Informasi Account</span>
                     </div>
                     <div class="card-body">
                         <div class="row py-2">
@@ -24,10 +24,12 @@
                                 </form>
                             </div>
                             <div class="col-md-6 ms-auto">
-                                <form class="d-flex">
-                                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                                <form class="d-flex" method="GET">
+                                    @csrf
+                                    <input class="form-control me-2" type="search" placeholder="Search Account" aria-label="Search" name="search" value="{{ $searchQuery }}">
                                     <button class="btn btn-outline-success" type="submit">Search</button>
                                 </form>
+                                
                             </div>
                         </div>
                         <table class="table table-white text-dark">
@@ -61,6 +63,40 @@
                             
                             
                         </table>
+                        
+                        
+                        <div class="container">
+
+                            <nav aria-label="Page navigation" class="d-flex justify-content-center">
+                                <ul class="pagination" class="d-flex justify-content-center">
+                                    {{-- Previous Page Link --}}
+                                    @if ($accounts->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Previous</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $accounts->previousPageUrl() }}">Previous</a>
+                                        </li>
+                                    @endif
+                                    @for ($i = 1; $i <= $accounts->lastPage(); $i++)
+                                    <li class="page-item {{ $accounts->currentPage() == $i ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ $accounts->url($i) }}"> {{ $i }}</a>
+                                    </li>
+                                    @endfor
+                                    {{-- Next Page Link --}}
+                                    @if ($accounts->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link" href="{{ $accounts->nextPageUrl() }}">Next</a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Next</span>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>

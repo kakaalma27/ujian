@@ -3,9 +3,9 @@
 @section('content')
 <div class="row">
     <div class="col">
-        <div class="card">
+        <div class="card" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
             <div class="card-header fs-5 d-none d-sm-inline">
-            Kelas
+                 <span class="fs-4 fw-normal">Kelas</span>
             </div>
             <div class="card-body">
                 <a href="{{ route('kelas.create') }}" class="btn btn-dark mb-2">Tambah Kelas</a>
@@ -39,9 +39,9 @@
         </div>
     </div>
     <div class="col">
-        <div class="card">
+        <div class="card" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
             <div class="card-header fs-5 d-none d-sm-inline">
-                Siswa
+                <span class="fs-4 fw-normal">Tambah Siswa</span>
             </div>
             <div class="card-body">
                 <a href="{{ route('admin.anggota') }}" class="btn btn-dark mb-2">Tambah Siswa</a>
@@ -60,11 +60,8 @@
                         <th scope="row">{{ $loop->iteration }}</th>
                         <td>{{ $kelasItem->nama_kelas }}</td>
                         <td>
-                            @foreach ($kelasItem->userKelas as $userKelasItem)
-                                {{ $userKelasItem->user->name }}<br>
-                            @endforeach
+                            {{ $totalUser }}
                         </td>
-                        <td>
                             <td>
                                 <a href="{{ route('admin.anggota.edit', $kelasItem->id) }}" class="btn btn-primary">Edit</a>
                                 <form action="{{ route('admin.anggota.destroy', $kelasItem->id) }}" method="POST" style="display: inline;">
@@ -72,7 +69,6 @@
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus kelas ini?')">Delete</button>
                                 </form>
-                            </td>
                         </td>
                     </tr>
                 @endforeach

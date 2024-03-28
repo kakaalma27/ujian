@@ -59,13 +59,12 @@
                     <div class="row">
                       <div class="col-md-8">
                         <div class="d-flex justify-content-center mt-2">
-                            <a href="#" class="btn btn-primary me-2" data-id="-1" id="prev-soal">Prev</a>
+                            <a href="#" class="btn btn-outline-secondary me-2" data-id="-1" id="prev-soal">Prev</a>
                             <a href="#" class="btn btn-primary me-2" data-id="0" id="next-soal">Next</a>
                         </div>
                       </div>
                       <div class="col">
-                        
-                        <a href="#" class="btn btn-danger me-2" id="selesai">Selesai</a>
+                        <a href="#" class="btn btn-danger me-2 mt-2" id="selesai">Selesai</a>
                       </div>
                     </div>
                       
@@ -97,15 +96,16 @@
     loadForm(0);
 
     function loadTotalSoal() {
-      let totalSoal = result['data']['form'].length;
-      let totalSoalHTML = '';
-      for (let i = 0; i < totalSoal; i++) {
-        let soalIndex = i + 1;
-        let buttonClass = isJawabanSelected(i) ? 'btn btn-primary btn-soal' : 'btn btn-danger btn-soal';
-        totalSoalHTML += `<button type="button" class="${buttonClass}" data-soal-index="${i}">${soalIndex}</button>`;
-      }
-      $("#total-soal").html(totalSoalHTML);
-    };
+  let totalSoal = result['data']['form'].length;
+  let totalSoalHTML = '';
+  for (let i = 0; i < totalSoal; i++) {
+    let soalIndex = i + 1;
+    let buttonClass = isJawabanSelected(i) ? 'btn btn-primary btn-soal' : 'btn btn-danger btn-soal';
+    totalSoalHTML += `<button type="button" class="${buttonClass}" data-soal-index="${i}" style="margin-right: 5px; margin-top: 5px;">${soalIndex}</button>`;
+  }
+  $("#total-soal").html(totalSoalHTML);
+};
+
 
     $("#selesai").click(function(e){
         e.preventDefault()
@@ -115,7 +115,7 @@
             url: "http://127.0.0.1:8000/selesai-ujian",
             method: "GET",
             success: (response) => {
-              window.location.href = "/home"
+              window.location.href = "/hasil-ujian"
             }
           })
         }
@@ -216,21 +216,26 @@
     });
 
     $("#prev-soal").click(function(e) {
-      e.preventDefault();
-      if (parseInt($(this).attr("data-id")) < 0) {
+    e.preventDefault();
+    let value = parseInt($(this).attr("data-id"));
+    if (value <= 0) {
+        // Mengubah kelas tombol menjadi btn-outline-secondary
+        $(this).addClass("btn-outline-secondary").removeClass("btn-primary");
+        // Menonaktifkan tombol
+        $(this).prop("disabled", true);
         return;
-      }
-      let value = parseInt($(this).attr("data-id"));
-      $(this).attr("data-id", value - 1);
-      $("#next-soal").attr("data-id", value);
-      if (value > 0) {
-        loadForm(value - 1);
-        console.log("back");
-      } else {
-        loadForm(value);
-      }
+    } else {
+        // Menghapus kelas btn-outline-secondary jika data-id > -1
+        $(this).addClass("btn-primary").removeClass("btn-outline-secondary");
+        // Mengaktifkan tombol
+        $(this).prop("disabled", false);
+    }
+    $(this).attr("data-id", value - 1);
+    $("#next-soal").attr("data-id", value);
+    loadForm(value - 1);
+});
 
-    });
+
 
     $("#next-soal").click(function(e) {
       e.preventDefault();

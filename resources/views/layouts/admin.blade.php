@@ -18,65 +18,52 @@
  <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
 </head>
 <body>
-    <div id="app">
-        <div class="container-fluid">
-            <div class="row flex-nowrap">
-              <div class="bg-dark col-auto col-md-2 min-vh-100 d-none d-md-block" id="sidebar">
-        
-                <div class="bg-dark p-2">
-                  <a href="/admin/home" class="d-flex text-decoration-none mt-1 align-items-center text-white">
-                    <span class="fs-4 ms-0 d-none d-sm-inline">SMP Islam <span class="text-warning">Terpadu Al Burhan</span></span>
+  <div id="app">
+    <div class="container-fluid bg-light" >
+        <div class="row flex-nowrap">
+            <div class="bg-white col-auto col-md-2 min-vh-100 d-none d-md-block" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;" id="sidebar">
+                <div class="bg-white p-2" >
+                  <a href="/admin/home" class="d-flex text-decoration-none mt-1 align-items-center text-dark">
+                    <span class="fs-4 ms-0 d-none d-sm-inline">Logo</span>
                   </a>
                   <ul class="nav nav-pills flex-column mt-4">
                     <li class="nav-item py-2 py-sm-0">
-                      <a href="/admin/home" class="nav-link text-white">
-                        <i class="fs-4 bi bi-house"></i></i></i><span class="fs-5 ms-3 d-none d-sm-inline">Dashboard</span>
+                      <a href="/admin/home" class="nav-link text-dark">
+                        <i class="fs-4 bi bi-house-door"></i><span class="fs-5 ms-3 d-none d-sm-inline">Dashboard</span>
                       </a>
                     </li>
                     <li class="nav-item py-2 py-sm-0">
-                      <a href="{{ route('pelajaran.index') }}" class="nav-link text-white">
-                        <i class="fs-4 bi bi-book"></i></i></i><span class="fs-5 ms-3 d-none d-sm-inline">Pelajaran</span>
+                      <a href="/admin/account" class="nav-link text-dark">
+                        <i class="fs-4 bi bi-person-add"></i><span class="fs-5 ms-3 d-none d-sm-inline">Informasi Akun</span>
                       </a>
                     </li>
                     <li class="nav-item py-2 py-sm-0">
-                      <a href="{{route('account.index') }}" class="nav-link text-white">
-                        <i class="fs-4 bi bi-person-plus"></i></i><span class="fs-5 ms-3 d-none d-sm-inline">Account</span>
+                      <a href="/admin/pelajaran" class="nav-link text-dark">
+                        <i class="fs-4 bi bi bi-activity"></i><span class="fs-5 ms-3 d-none d-sm-inline">Pelajaran</span>
                       </a>
                     </li>
                     <li class="nav-item py-2 py-sm-0">
-                        <a href="{{ route('kelas.index') }}" class="nav-link text-white">
-                          <i class="fs-4 bi bi-person-workspace"></i></i><span class="fs-5 ms-3 d-none d-sm-inline">Kelas</span>
-                        </a>
-                      </li>
-                      <li class="nav-item py-2 py-sm-0">
-                        <a href="{{ route('admin.excel.index') }}" class="nav-link text-white">
-                          <i class="fs-4 bi bi-person-workspace"></i></i><span class="fs-5 ms-3 d-none d-sm-inline">Format Ujian</span>
+                        <a href="/admin/kelas" class="nav-link text-dark">
+                          <i class="fs-4 bi bi-people-fill"></i><span class="fs-5 ms-3 d-none d-sm-inline">Kelas</span>
                         </a>
                       </li>
                   </ul>
                 </div>
               </div>
-              <div class="col px-0">
-                <nav class="navbar bg-dark px-lg-0">
+              <div class="col px-3">
+                <nav class="navbar bg-white px-lg-3 my-3 rounded" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">
                   <div class="container">
                     <button class="navbar-toggler" type="button" id="sidebarToggle">
                       <span class="navbar-toggler-icon"></span>
-                      <span class="visually-hidden text-dark">Toggle sidebar</span>
-                    </button>
-                    
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                      <form class="d-flex" role="search">
-                        @csrf
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-dark" type="submit">Search</button>
-                      </form>
-                    </div>
+                      <span class="visually-hidden text-light">Toggle sidebar</span>
+                  </button>
                     <div class="dropdown open p-2">
                       <button class="btn border-none dropdown-toggle text-dark" type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true"
                           aria-expanded="false">
-                          <i class="fs-5 text-light bi bi-person"></i><span class="fs-5 text-light ms-2">{{ Auth::user()->name }}</span>
+                          <i class="fs-5 text-light bi bi-person"></i><span class="fs-5 text-dark ms-2">{{ Auth::user()->name }}</span>
                           </button>
                       <div class="dropdown-menu" aria-labelledby="triggerId">
+                        {{-- <a class="dropdown-item" href="{{ route('seting.index') }}">Setting</a> --}}
                         <a class="dropdown-item" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                                       document.getElementById('logout-form').submit();">
@@ -90,7 +77,7 @@
                     </div>
                   </div>
                 </nav>
-                <div class="container rounded mx-auto d-block">
+                <div class="container rounded mx-auto d-block " >
                   <div class="row justify-content-center">
                     <div class="col">
                         <main class="py-4">
@@ -100,19 +87,17 @@
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        <!-- Add jQuery before your custom script -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        
-        <script>
-          $(document).ready(function() {
-              $('#sidebarToggle').click(function() {
-                  $('#sidebar').toggleClass('collapsed');
-              });
-          });
-      </script>
+        </div>
     </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("sidebarToggle").addEventListener("click", function() {
+          document.getElementById("sidebar").classList.toggle("d-none");
+        });
+      });
+    </script>
+    
+</div>
 </body>
 </html>
 

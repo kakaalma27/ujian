@@ -20,6 +20,7 @@
                         <th scope="col">kelas</th>
                         <th scope="col">Waktu Ujian</th>
                         <th scope="col">kode akses</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Opsi</th>
                       </tr>
                     </thead>
@@ -32,6 +33,13 @@
                           <td>{{$item['durasi']}} Menit</td>
                           <td>{{$item['kode_akses']}}</td>
                           <td>
+                            @if($soalAda[$item->id])
+                                True
+                            @else
+                                False
+                            @endif
+                        </td>
+                                                  <td>
                             <a href="{{ route('guru.ujian.edit', $item['id']) }}" class="btn btn-warning">Edit</a>
             
                             <form action="{{ route('guru.ujian.destroy', $item['id']) }}" method="POST" class="d-inline">

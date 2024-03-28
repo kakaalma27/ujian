@@ -16,10 +16,8 @@ return new class extends Migration
         Schema::create('users_ujians', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("user_id");
-
             $table->foreign('user_id')->references('id')->on('users'); 
             $table->unsignedBigInteger("pelajaran_id");
-
             $table->foreign('pelajaran_id')->references('id')->on('pelajarans'); 
             $table->unsignedBigInteger("kelas_id");
             $table->foreign('kelas_id')->references('id')->on('kelas'); 

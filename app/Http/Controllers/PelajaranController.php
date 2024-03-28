@@ -22,7 +22,8 @@ class PelajaranController extends Controller
         
         $pelajarans = Pelajaran::with('guruMengajars')->whereHas('guruMengajars', function ($query) use ($users) {
             $query->whereIn('user_id', $users->pluck('id'));
-        })->get();
+        })->paginate(10);
+
         
         return view('admin.crud_guru.index', compact('pelajarans'));
     }

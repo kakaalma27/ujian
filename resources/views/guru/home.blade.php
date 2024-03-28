@@ -5,7 +5,7 @@
 
         <div class="row">
             <div class="col">
-                <div class="card bg-dark text-light" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">
+                <div class="card bg-white text-dark" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
                     <div class="card-body text-center">
                         <p>{{ $totalSiswa }}</p>
                         <label>Total Siswa</label>
@@ -13,7 +13,7 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card bg-dark text-light" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">
+                <div class="card bg-white text-dark" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
                     <div class="card-body text-center">
                         <p>{{ $siswaUjian }}</p>
                         <label>mengikuti ujian</label>
@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card bg-dark text-light" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">
+                <div class="card bg-white text-dark" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
                     <div class="card-body text-center">
                         <p>{{ $siswaTidakUjian }}</p>
                         <label>tidak mengikuti ujian</label>
@@ -29,7 +29,7 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card bg-dark text-light" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;">
+                <div class="card bg-white text-dark" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
                     <div class="card-body text-center">
                         <p>{{ $siswaUjian }}</p>
                         <label>Dinilai</label>
@@ -43,7 +43,7 @@
 <section>
     <div class="row">
         <div class="col-md-8">
-            <div class="card mt-5">
+            <div class="card mt-5" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
                 <div class="card-header fs-5 d-flex justify-content-between">
                     Progres Bar 
                     <div class="spinner-border" role="status">
@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="card mt-5">
+            <div class="card mt-5" style="box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px; border:none;">
                 <div class="card-header fs-5 d-none d-sm-inline">
                     Dinilai
                 </div>

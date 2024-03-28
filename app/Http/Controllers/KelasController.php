@@ -21,10 +21,18 @@ class KelasController extends Controller
         $kelas = kelas::with('userKelas', 'User')->whereHas('userKelas', function ($query) use ($users) {
             $query->whereIn('user_id', $users->pluck('id'));
         })->get();
-
+    
+        $totalUser = 0; // Initialize totalUser outside the loop
+    
+        foreach ($kelas as $kelasItem) {
+            $userKelas = $kelasItem->userKelas;
+            $totalUser += $userKelas->count(); // Accumulate the count of users
+        }
+    
         $kelaz = kelas::all();
-        return view('admin.crud_kelas.index', compact('kelas', 'kelaz'));
+        return view('admin.crud_kelas.index', compact('kelas', 'kelaz', 'totalUser'));
     }
+    
     
 
     /**

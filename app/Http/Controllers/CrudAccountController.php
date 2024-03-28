@@ -19,31 +19,26 @@ class CrudAccountController extends Controller
     public function index(Request $request)
     {
         $selectedRole = $request->input('listRole');
+        $searchQuery = $request->input('search');
     
         $query = User::query();
     
         if ($selectedRole !== null) {
             $query->where('role', $selectedRole);
-    
-            if ($selectedRole == 0) {
-
-            } elseif ($selectedRole == 1) {
-
-            }
         }
     
-        $accounts = $query->get();
-
+        if ($searchQuery) {
+            $query->where('name', 'like', '%' . $searchQuery . '%');
+        }
+    
+        $accounts = $query->paginate(5); // Change 10 to the desired number of items per page
+    
         return view('admin.crud_admin.index', [
             'accounts' => $accounts,
             'selectedRole' => $selectedRole,
+            'searchQuery' => $searchQuery, // Pass the search query to the view
         ]);
     }
-    
-    
-    
-    
-    
 
     /**
      * Show the form for creating a new resource.

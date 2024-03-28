@@ -42,6 +42,8 @@ Route::middleware(['auth','user-role:user'])->group(function()
     Route::get("/get-ujian-details",[UsersJawabanController::class, 'getUjianDetails']);
     Route::post("/update-ujian-details",[UsersJawabanController::class, 'updateJawabanUser']);
     Route::get("/selesai-ujian", [UsersJawabanController::class, 'selesaiUjian']);
+    Route::get("/hasil-ujian", [UsersJawabanController::class, 'Hasil']);
+
 });
 // Route Editor
 Route::middleware(['auth','user-role:guru'])->group(function()
@@ -53,10 +55,7 @@ Route::middleware(['auth','user-role:guru'])->group(function()
     Route::get('/guru/excel/download/{id}', [FormatUjianController::class, 'download'])->name('guru.excel.download');
     Route::post("/guru/uploadExcal", [UjianController::class, 'uploadExcal'])->name("guru.uploadExcal");
     Route::get("/guru/template", [UjianController::class, 'template'])->name("guru.template");
-    // Route::get("/guru/editSoal", [UjianController::class, 'editSoal'])->name("guru.editSoal");
-
     Route::get("/guru/HasilUjian/{id}", [ResultUjianController::class, 'index'])->name("guru.hasilUjian");
-
     Route::get('/guru/ujian/edit/{id}', [UjianController::class, 'edit'])->name('guru.ujian.edit');
     Route::put('/guru/ujian/update/{id}', [UjianController::class, 'update'])->name('guru.ujian.update');
     Route::delete('/guru/ujian/delete/{id}', [UjianController::class, 'destroy'])->name('guru.ujian.destroy');

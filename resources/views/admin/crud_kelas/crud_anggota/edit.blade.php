@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'edit siswa kelas')
+@section('title', 'Edit Siswa Kelas')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -11,22 +11,28 @@
                     <form action="{{ route('admin.anggota.update', $kelas->id) }}" method="POST">
                         @csrf
                         @method('PUT')
-                        <div>
-                            <label for="kelas_id">Kelas:</label>
-                            <select name="kelas_id" id="kelas_id" class="form-select">
-                                    <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="user_ids">Anggota:</label>
-                            <select name="user_ids[]" id="countries" multiple>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}" {{ in_array($user->id, $selectedUserIds) ? 'selected' : '' }}>
-                                        {{ $user->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Kelas</th>
+                                    <th>Anggota</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>{{ $kelas->nama_kelas }}</td>
+                                    <td>
+                                        <select name="user_ids[]" id="users" multiple>
+                                            @foreach ($users as $user)
+                                                <option value="{{ $user->id }}" {{ in_array($user->id, $selectedUserIds) ? 'selected' : '' }}>
+                                                    {{ $user->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <button type="submit" class="btn btn-primary">Update</button>
                     </form>
                 </div>
@@ -36,6 +42,6 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
 <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
 <script>
-    new MultiSelectTag('countries')  // id
+    new MultiSelectTag('users')  // id
 </script>
 @endsection

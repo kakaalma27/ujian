@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('jawabans', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('soal_id');
-            $table->foreign('soal_id')->references('id')->on('soals'); 
+            $table->foreign('soal_id')->references('id')->on('soals')->onDelete('cascade'); 
             $table->text('isi_jawaban')->nullable();
             $table->boolean('is_correct')->default(0);
             $table->timestamps();

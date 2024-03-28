@@ -215,4 +215,9 @@ class UsersJawabanController extends Controller
         ]);
     }
 
+
+    public function Hasil()
+    {
+        return view('siswa.ujian.resultUjian');
+    }
 }

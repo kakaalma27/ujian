@@ -12,6 +12,7 @@
             <div class="form-group">
                 <label for="nama_kelas">Nama Kelas</label>
                 <input type="text" class="form-control" id="nama_kelas" name="nama_kelas" value="{{ $kelas->nama_kelas }}">
+
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>

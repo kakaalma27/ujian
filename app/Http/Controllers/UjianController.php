@@ -25,11 +25,16 @@ class UjianController extends Controller
         $pelajarans = Pelajaran::with('guruMengajars')->whereHas('guruMengajars', function ($query) use ($users) {
             $query->whereIn('user_id', [$users]);
         })->get();
+    
+        $soalAda = [];
+        foreach ($pelajarans as $pelajaran) {
+            $soalAda[$pelajaran->id] = Soal::where('pelajaran_id', $pelajaran->id)->exists();
+        }
         $kelas = Kelas::all();
         $data = format_ujian::all();
-
-        return view('guru.crud_soal.index', compact('pelajarans', 'kelas', 'data'));
+        return view('guru.crud_soal.index', compact('pelajarans', 'kelas', 'data', 'soalAda'));
     }
+    
 
     public function create()
     {
@@ -99,8 +104,6 @@ class UjianController extends Controller
         }
     }
     
- 
-    
     public function uploadExcal(Request $request)
     {
         DB::beginTransaction();
@@ -162,27 +165,11 @@ class UjianController extends Controller
     public function edit($id)
     {
         try {
-            $userSoal = DB::select(DB::raw("SELECT soals.id, soals.user_id, soals.isi_soal, soals.pelajaran_id, pelajarans.pelajaran, pelajarans.durasi, soals.kelas_id, kelas.nama_kelas 
-            FROM soals
-            INNER JOIN pelajarans ON soals.pelajaran_id = pelajarans.id
-            INNER JOIN kelas ON soals.kelas_id = kelas.id
-            WHERE soals.pelajaran_id = :id"), ['id' => $id]);
-        
-            $data = [];
-    
-            foreach ($userSoal as $key => $soal) {
-                $isiSoal = DB::select(DB::raw("SELECT id, isi_soal FROM soals WHERE pelajaran_id = ?"), [$id]);
-                $data[$key] = [];
-                $data[$key]['isi_soal'] = $isiSoal[0]->isi_soal;
-    
-                $jawabanContainer = [];
-                $jawabanSoal = DB::select(DB::raw("SELECT id, isi_jawaban, is_correct FROM jawabans WHERE soal_id = ? ORDER BY id ASC"), [$id]);
-                foreach($jawabanSoal as $jawaban){
-                    $jawabanContainer[] = ['jawaban_id' => $jawaban->id, 'isi_jawaban' => $jawaban->isi_jawaban];
-                }
-                $data[$key]['jawaban'] = $jawabanContainer;
-            }
-            return view('guru.crud_soal.edit', compact('userSoal', 'data'));
+            $data = Soal::with('jawabans', 'pelajarans', 'kelas')
+                ->where('pelajaran_id', $id)
+                ->get();
+
+            return view('guru.crud_soal.edit', compact('data'));
         } catch (\Throwable $e) {
             return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
         }
@@ -193,35 +180,63 @@ class UjianController extends Controller
     {
         DB::beginTransaction();
         try {
-            $question = Soal::find($id);
+            // Hapus soal dan jawaban yang terkait dengan pelajaran ini
+            $deletedSoalIds = Soal::where('pelajaran_id', $id)->pluck('id');
+            foreach ($deletedSoalIds as $soalId) {
+                DB::table('users_jawabans')->whereIn('jawaban_id', function ($query) use ($soalId) {
+                    $query->select('id')->from('jawabans')->where('soal_id', $soalId);
+                })->delete();
+            }
     
-            // Update the question details
-            $question->update([
-                'kelas_id' => $request->input('kelas_id'),
-                'isi_soal' => $request->input('isi_soal'),
-            ]);
+            Jawaban::whereIn('soal_id', $deletedSoalIds)->delete();
+            Soal::where('pelajaran_id', $id)->delete();
     
-            // Update the related duration
-            $jam = intval(request('durasi'));
-            $menit = intval(request('durasi_menit'));
+            // Update durasi pelajaran
+            $jam = intval($request->input('durasi'));
+            $menit = intval($request->input('durasi_menit'));
             $total_menit = ($jam * 60) + $menit;
-            pelajaran::where('id', $question->pelajaran_id)->update([
-                'durasi' => $total_menit
-            ]);
+            $durasi = ($total_menit == 0) ? null : $total_menit;
+            Pelajaran::where('id', $id)->update(['durasi' => $durasi]);
     
-            // Update the related answers (if needed)
+            // Buat soal dan jawaban baru jika ada data soal yang dikirimkan melalui form
+            if ($request->has('soal')) {
+                $soalArray = $request->input('soal');
+                foreach ($soalArray as $soalData) {
+                    $question = Soal::create([
+                        'user_id' => auth()->id(),
+                        'kelas_id' => $request->input('kelas_id'),
+                        'pelajaran_id' => $id,
+                        'isi_soal' => $soalData['isi_soal']
+                    ]);
+    
+                    $jawabanArray = $soalData['isi_jawaban'];
+                    $totalJawaban = count($jawabanArray);
+                    $is_correct_option = $soalData['isi_jawaban_correct'];
+    
+                    for ($j = 0; $j < $totalJawaban; $j++) {
+                        $jawabanData = $jawabanArray[$j];
+                        $is_correct = ($is_correct_option == $j) ? 1 : 0;
+    
+                        Jawaban::create([
+                            'soal_id' => $question->id,
+                            'isi_jawaban' => $jawabanData,
+                            'is_correct' => $is_correct,
+                        ]);
+                    }
+                }
+            }
     
             DB::commit();
     
-            return redirect()->route('ujian.index')->with('success', 'Question updated successfully');
+            return response()->json(['message' => 'Data updated successfully'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Error: ' . $e->getMessage());
+    
+            return response('Error: ' . $e->getMessage(), 500);
         }
     }
     
     
-
     public function download($filename)
     {
         $path = public_path('storage/' . $filename);
@@ -232,10 +247,5 @@ class UjianController extends Controller
     public function template()
     {
         return view('guru.template');
-    }
-
-    public function editSoal()
-    {
-        return view('guru.editSoal');
     }
 }

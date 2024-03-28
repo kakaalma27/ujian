@@ -28,7 +28,6 @@
 <script>
     $(document).ready(function(){
 
-
         function initalize(){
             return $.ajax({
                 url: 'http://127.0.0.1:8000/get-nilai-ujian',
